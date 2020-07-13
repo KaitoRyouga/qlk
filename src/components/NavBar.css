@@ -1,0 +1,88 @@
+.LayoutHome {
+    padding: 0.5em;
+}
+
+.HeaderHome {
+    background-color: #428BCA;
+    color: white;
+}
+
+.SliderHome {
+    background-color: white;
+    border: 1px solid;
+    margin-top: 0.9em;
+}
+
+.BoxSlider {
+    /* margin: 1em; */
+    padding: 0.5em;
+    background-color: #428BCA;
+    border-radius: 0.5em;
+}
+
+label {
+    width: 8em;
+    font-size: 0.5em;
+    display: flex;
+    justify-content: flex-end;
+}
+
+.ButtonModal {
+    background-color: #428BCA;
+    color: white;
+    border-radius: 0.5em;
+}
+
+.error {
+    color: red;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    text-align: center;
+    margin-left: 10em;
+}
+
+.TypographyPanel {
+    font-size: '1em';
+    margin-left: '2em';
+    cursor: pointer;
+}
+
+.MenuItem:focus{
+    background-color: white;
+}
+
+.MenuItem:hover{
+    background-color: white;
+}
+
+.HeaderHomeModal {
+    background-color: white;
+    /* color: ; */
+}
+
+.LayoutHomeModal {
+    padding: 1em;
+}
+
+.ContentModal {
+    border: 1px solid;
+    padding: 1em;
+    height: 100%;
+}
+
+.NhapKho {
+    /* border: 1px solid; */
+    /* height: 100%; */
+}
+
+.SliderModal {
+    border: 1px solid;
+    padding: 1em;
+    background-color: white;
+    width: 100%;
+}
+
+.spaceCol {
+    height: 3em;
+}
