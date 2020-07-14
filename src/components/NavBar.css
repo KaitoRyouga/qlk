@@ -71,11 +71,6 @@ label {
     height: 100%;
 }
 
-.NhapKho {
-    /* border: 1px solid; */
-    /* height: 100%; */
-}
-
 .SliderModal {
     border: 1px solid;
     padding: 1em;
@@ -85,4 +80,11 @@ label {
 
 .spaceCol {
     height: 3em;
+}
+
+.HeaderHomeSearch {
+    background-color: #428BCA;
+    color: white;
+    padding: 0 1em;
+    margin-bottom: 1em;
 }

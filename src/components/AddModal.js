@@ -1,12 +1,22 @@
 import React, { Component } from 'react';
 
-import { Typography, Layout, Divider, Row, Col, Form, Input, Button, Table, Space, Tabs } from 'antd'
+import { Typography, Layout, Divider, Row, Col, Form, Input, Button, Table, Space, Tabs, Select, InputNumber } from 'antd'
+
+import duplicate from './duplicate'
+import convertSumMoney from './convertSumMoney'
+import InfoGeneral from './InfoGeneral'
+// import onChangeInputRange from './OnChange'
+
+// import Mathang from '../data/data'
 
 const { Header, Footer, Content } = Layout;
 const { TabPane } = Tabs;
+const { Option } = Select;
 const { TextArea } = Input
 
 function financial(x) {
+
+    x = String(x).split(".").join("");
 
     if(Number(x) != x){
         return null
@@ -41,9 +51,6 @@ function financial(x) {
         }
     }
 
-    // console.log(arrR)
-    // console.log(arrR2)
-
     arrR2 = arrR2.reverse()
     arrR = arrR.reverse()
 
@@ -59,80 +66,87 @@ function financial(x) {
 
     return xCut3
 
-    
-  }
-  
+  }  
 
-const columns = [
-    {
-      title: '#',
-      dataIndex: 'index',
-      key: 'index',
-    },
-    {
-      title: 'Mã hàng',
-      dataIndex: 'Mahang',
-      key: 'Mahang',
-    },
-    {
-      title: 'Tên hàng',
-      dataIndex: 'Tenhang',
-      key: 'Tenhang',
-    },
-    {
-      title: 'ĐVT',
-      key: 'DVT',
-      dataIndex: 'DVT',
-    },
-    {
-      title: 'Số lượng',
-      key: 'Soluong',
-      dataIndex: 'Soluong',
-    },
-    {
-        title: 'Đơn giá',
-        key: 'Dongia',
-        dataIndex: 'Dongia',
-        render: (Dongia) => {         
-            return(  
-                <span>
-                    {financial(Dongia)}
-                </span>
-            )
-        }
-      },
-      {
-        title: 'Giảm giá',
-        key: 'Giamgia',
-        dataIndex: 'Giamgia',
-        render: (Giamgia) => {         
-            return(  
-                <span>
-                    {financial(Giamgia)}
-                </span>
-            )
-        }
-      },
-      {
-        title: 'Thành tiền',
-        key: 'Thanhtien',
-        dataIndex: 'Thanhtien',
-        render: (Thanhtien) => {         
-            return(  
-                <span>
-                    {financial(Thanhtien)}
-                </span>
-            )
-        }
-      },
-      {
-        title: 'Ghi chú',
-        key: 'Ghichu',
-        dataIndex: 'Ghichu',
-      },
-  ];
+// const columns = [
+//     {
+//       title: '#',
+//       dataIndex: 'index',
+//       key: 'index',
+//     },
+//     {
+//       title: 'Mã hàng',
+//       dataIndex: 'Mahang',
+//       key: 'Mahang',
+//     },
+//     {
+//       title: 'Tên hàng',
+//       dataIndex: 'Tenhang',
+//       key: 'Tenhang',
+//     },
+//     {
+//       title: 'ĐVT',
+//       key: 'DVT',
+//       dataIndex: 'DVT',
+//     },
+//     {
+//       title: 'Số lượng',
+//       key: 'Soluong',
+//       dataIndex: 'Soluong',
+//       render: (Soluong) => {
+//         return(
+//             <InputNumber onChange={(e) => {
+//                 const dataTemp = onChangeInputRange(e, data)
+//                 data = dataTemp
+//             }} defaultValue={Soluong}></InputNumber>
+//         )
+//       }
+//     },
+//     {
+//         title: 'Đơn giá',
+//         key: 'Dongia',
+//         dataIndex: 'Dongia',
+//         render: (Dongia) => {         
+//             return(  
+//                 <span>
+//                     {financial(Dongia)}
+//                 </span>
+//             )
+//         }
+//       },
+//       {
+//         title: 'Giảm giá',
+//         key: 'Giamgia',
+//         dataIndex: 'Giamgia',
+//         render: (Giamgia) => {         
+//             return(  
+//                 <span>
+//                     {financial(Giamgia)}
+//                 </span>
+//             )
+//         }
+//       },
+//       {
+//         title: 'Thành tiền',
+//         key: 'Thanhtien',
+//         dataIndex: 'Thanhtien',
+//         render: (Thanhtien) => {
+//             console.log(data)      
+//             return(  
+//                 <span>
+//                     {financial(Thanhtien)}
+//                 </span>
+//             )
+//         }
+//       },
+//       {
+//         title: 'Ghi chú',
+//         key: 'Ghichu',
+//         dataIndex: 'Ghichu',
+//       },
+//   ];
   
-  const data = [
+  let data = [
     {
       key: '1',
       index: '1',
@@ -140,23 +154,11 @@ const columns = [
       Tenhang: 'Sài gòn special',
       DVT: 'Thùng',
       Soluong: 1,
-      Dongia: 250000,
-      Giamgia: 50000,
-      Thanhtien: 200000,
+      Dongia: '250000',
+      Giamgia: '50000',
+      Thanhtien: '200000',
       Ghichu: '',
-    },
-    {
-        key: '2',
-        index: '2',
-        Mahang: '',
-        Tenhang: '',
-        DVT: '',
-        Soluong: null,
-        Dongia: null,
-        Giamgia: null,
-        Thanhtien: null,
-        Ghichu: '',
-      }
+    }
   ];
 
 class AddModal extends Component {
@@ -164,21 +166,39 @@ class AddModal extends Component {
     formRef = React.createRef();
 
     state = {
+        reset: false,
         valueTTH: null,
         valueGG: null,
         valueCanTra: null,
         valueDaTra: null,
         valueNo: null,
+        dataP: [],
+        selectedRows: [],
+        dataGeneral: [
+            {
+                key: 0,
+                index: 0,
+                Mahang: '',
+                Tenhang: '',
+                DVT: '',
+                Soluong: 0,
+                Dongia: 0,
+                Giamgia: 0,
+                Thanhtien: 0,
+                Ghichu: '',
+            }
+        ],
+        dataArr: {}
     }
 
     onChangeTTH = (e) => {
         let numberTTH = e.target.value
         let numberTTH2 = numberTTH.split(".").join("");
         let numberTTH3 = financial(Number(numberTTH2))
-        console.log(numberTTH3)
-        // this.setState({
-        //     valueTTH: numberTTH3
-        // })
+
+        this.setState({
+            valueTTH: numberTTH3
+        })
 
         this.formRef.current.setFieldsValue({
             Tongtienhang: numberTTH3
@@ -189,36 +209,48 @@ class AddModal extends Component {
         let numberTTH = e.target.value
         let numberTTH2 = numberTTH.split(".").join("");
         let numberTTH3 = financial(Number(numberTTH2))
-        console.log(numberTTH3)
-        // this.setState({
-        //     valueGG: numberTTH3
-        // })
+
+        this.setState({
+            valueGG: numberTTH3
+        })
+
         this.formRef.current.setFieldsValue({
             Giamgia: numberTTH3
         })
+
+        let dataTemp = this.state.dataP
+        dataTemp[this.state.dataP.length - 1].Giamgia = numberTTH3
+
+        let fix = convertSumMoney(dataTemp)
+        this.setState({
+            dataP: fix
+        })
+
     }
 
     onChangeCanTra = (e) => {
         let numberTTH = e.target.value
         let numberTTH2 = numberTTH.split(".").join("");
         let numberTTH3 = financial(Number(numberTTH2))
-        console.log(numberTTH3)
-        // this.setState({
-        //     valueCanTra: numberTTH3
-        // })
-        this.formRef.current.setFieldsValue({
-            CantraNCC: numberTTH3
+
+        this.setState({
+            valueTCanTra: numberTTH3
         })
+
+        // this.formRef.current.setFieldsValue({
+        //     CantraNCC: numberTTH3
+        // })
     }
 
     onChangeDaTra = (e) => {
         let numberTTH = e.target.value
         let numberTTH2 = numberTTH.split(".").join("");
         let numberTTH3 = financial(Number(numberTTH2))
-        console.log(numberTTH3)
-        // this.setState({
-        //     valueDaTra: numberTTH3
-        // })
+
+        this.setState({
+            valueDaTra: e.target.value
+        })
+
         this.formRef.current.setFieldsValue({
             TiendatraNCC: numberTTH3
         })
@@ -228,16 +260,207 @@ class AddModal extends Component {
         let numberTTH = e.target.value
         let numberTTH2 = numberTTH.split(".").join("");
         let numberTTH3 = financial(Number(numberTTH2))
-        console.log(numberTTH3)
-        // this.setState({
-        //     valueNo: numberTTH3
-        // })
+
+        this.setState({
+            valueNo: e.target.value
+        })
+
         this.formRef.current.setFieldsValue({
             TiennoNCC: numberTTH3
         })
     }
 
+    componentDidUpdate(prevProps, prevState) {
+
+        if(prevState.valueDaTra !== this.state.valueDaTra){
+            let valueDaTra = this.state.valueDaTra.split('.').join('')
+            let Thanhtien = this.state.dataP[this.state.dataP.length - 1].Thanhtien.split('.').join('')
+            let TiennoNCC = Number(Thanhtien) - Number(valueDaTra)
+            TiennoNCC = financial(TiennoNCC)
+            this.formRef.current.setFieldsValue({
+                TiennoNCC: TiennoNCC
+            })
+        }
+
+        if(this.state.dataP !== data){
+            this.setState({
+                dataP: data
+            })
+        }
+
+    }
+
+    componentDidMount(){
+
+        // this.setState({
+        //     reset: !this.state.reset
+        // })
+
+        if(this.props.selectRowsSearch.length !== 0){
+
+            // console.log(this.state.dataP)
+            // console.log(this.props.selectRowsSearch)
+
+            // this.props.selectRowsSearch.forEach(item => {
+            //     let selectRowsSearch = 
+            //     selectRowsSearch.push(item)
+            //     selectRowsSearch[0].Giamgia = 0
+            //     selectRowsSearch[0].Thanhtien = item.Dongia
+            //     let dataTemp = [].concat(data, selectRowsSearch)
+            //     this.setState({
+            //         dataP: dataTemp
+            //     })
+            // });
+
+            let selectRowsSearch = this.props.selectRowsSearch
+            selectRowsSearch.forEach(item => {
+                item.Giamgia = 0
+                item.Thanhtien = item.Dongia
+                console.log(item)
+                let dataTemp = [].concat(data, selectRowsSearch)
+                this.setState({
+                    dataP: dataTemp
+                })
+
+                data = dataTemp
+            });
+
+        }else{
+            
+            this.setState({
+                dataP: data
+            })
+
+            // this.formRef.current.setFieldsValue({
+            //     Tongsoluong: 1,
+            //     Tongtienhang: data[data.length - 1].Thanhtien,
+            //     CantraNCC: data[data.length - 1].Thanhtien,
+            // })
+        }
+
+        let dataArr = InfoGeneral(data)
+
+        this.setState({
+            dataArr: dataArr
+        })
+
+        this.formRef.current.setFieldsValue({
+            Tongsoluong: financial(dataArr.Soluong),
+            Giamgia: financial(dataArr.Giamgia),
+            Tongtienhang: financial(dataArr.Thanhtien),
+            CantraNCC: financial(dataArr.Thanhtien),
+            TiendatraNCC: 0,
+        })
+        
+    }
+
+    handleClickSearch = (values) => {
+        this.props.handleClickSearch(values)
+    }
+
+    onChangeInputRange = (e) => {
+        let dataTemp = this.state.dataP
+        dataTemp[this.state.dataP.length - 1].Soluong = e
+
+        let fix = convertSumMoney(dataTemp)
+        this.setState({
+            dataP: fix
+        })
+
+    }
+
+    onClickTest = () => {
+        console.log('test')
+    }
+
     render() {
+
+        const rowSelection = {
+            onChange: (selectedRowKeys, selectedRows) => {
+
+                // this.props.handleClickColumn(selectedRows)
+                this.setState({
+                    selectedRows: selectedRows
+                })
+            },
+        };
+
+        const columns = [
+            {
+              title: '#',
+              dataIndex: 'index',
+              key: 'index',
+            },
+            {
+              title: 'Mã hàng',
+              dataIndex: 'Mahang',
+              key: 'Mahang',
+            },
+            {
+              title: 'Tên hàng',
+              dataIndex: 'Tenhang',
+              key: 'Tenhang',
+            },
+            {
+              title: 'ĐVT',
+              key: 'DVT',
+              dataIndex: 'DVT',
+            },
+            {
+              title: 'Số lượng',
+              key: 'Soluong',
+              dataIndex: 'Soluong',
+              render: (Soluong) => {
+                return(
+                    <InputNumber onChange={(e) => {
+                        this.onChangeInputRange(e)
+                    }} defaultValue={Soluong}></InputNumber>
+                )
+              }
+            },
+            {
+                title: 'Đơn giá',
+                key: 'Dongia',
+                dataIndex: 'Dongia',
+                render: (Dongia) => {         
+                    return(  
+                        <span>
+                            {financial(Dongia)}
+                        </span>
+                    )
+                }
+              },
+              {
+                title: 'Giảm giá',
+                key: 'Giamgia',
+                dataIndex: 'Giamgia',
+                render: (Giamgia) => {         
+                    return(  
+                        <Input style={{width: '5em'}} defaultValue={Giamgia} onChange={(e) => this.onChangeGG(e)} value={financial(Giamgia)}></Input>
+                    )
+                }
+              },
+              {
+                title: 'Thành tiền',
+                key: 'Thanhtien',
+                dataIndex: 'Thanhtien',
+                render: (Thanhtien) => {
+                    console.log(data)      
+                    return(  
+                        <span>
+                            {financial(Thanhtien)}
+                        </span>
+                    )
+                }
+              },
+              {
+                title: 'Ghi chú',
+                key: 'Ghichu',
+                dataIndex: 'Ghichu',
+              },
+          ];
+        
+
         return (
             <div>
                 <Layout className="LayoutHomeModal">
@@ -253,19 +476,26 @@ class AddModal extends Component {
                                         <div className="NhapKho">
                                             <Row style={{height: '100%'}}>
                                                 <Col span={20}>
-                                                    <Form>
-                                                        <Form.Item label="Nhập kho">
+                                                    <Form id="formSearch" onFinish={this.handleClickSearch}>
+                                                        <Form.Item name="Nhapkho" label="Nhập kho">
                                                             <Input placeholder="Nhập mã hàng hoặc tên hàng"></Input>
                                                         </Form.Item>
                                                     </Form>
                                                 </Col>
                                                 <Col span={2} offset={1}>
-                                                    <Button>Tìm kiếm</Button>
+                                                    <Button form="formSearch" key="submit" htmlType="submit">Tìm kiếm</Button>
                                                 </Col>
                                             </Row>
                                         </div>
                                         <div className="NhapKho">
-                                            <Table columns={columns} dataSource={data} />
+                                            <Table 
+                                                columns={columns} 
+                                                dataSource={this.state.dataP} 
+                                                rowSelection={{
+                                                    type: "checkbox",
+                                                    ...rowSelection,
+                                                }}
+                                            />
                                         </div>
                                     </Content>
                                 </Col>
@@ -283,7 +513,10 @@ class AddModal extends Component {
                                                             <Row>
                                                                 <Col span={24}>
                                                                     <Form.Item name="Nguoitao" label="Người tạo">
-                                                                        <Input></Input>
+                                                                        <Select>
+                                                                            <Option value="Nguyenvana">Nguyễn Văn A</Option>
+                                                                            <Option value="Nguyenvanb">Nguyễn Văn B</Option>
+                                                                        </Select>
                                                                     </Form.Item>
                                                                 </Col>
                                                                 <div className="spaceCol"></div>
@@ -307,20 +540,20 @@ class AddModal extends Component {
                                                                 <div className="spaceCol"></div>
                                                                 <Col span={24}>
                                                                     <Form.Item name="Trangthai" label="Trạng thái">
-                                                                        <Input></Input>
+                                                                        <Input defaultValue="Mới"></Input>
                                                                     </Form.Item>
                                                                 </Col>
                                                                 <div className="spaceCol"></div>
                                                                 <Col span={24}>
                                                                     <Form.Item name="Tongsoluong" label="Tổng số lượng">
-                                                                        <Input></Input>
+                                                                        <InputNumber disabled onChange={(e) => this.onChangeInputRange(e)} style={{width: '100%'}}/>
                                                                     </Form.Item>
                                                                 </Col>
                                                                 <div className="spaceCol"></div>
                                                                 <Col span={24}>
 
                                                                 <Form.Item name="Tongtienhang" label="Tổng tiền hàng">
-                                                                    <Input onChange={(e) => this.onChangeTTH(e)}></Input>
+                                                                    <Input disabled></Input>
                                                                 </Form.Item>
                                                                     
                                                                 </Col>
@@ -328,13 +561,13 @@ class AddModal extends Component {
                                                                 <Col span={24}>
 
                                                                     <Form.Item name="Giamgia" label="Giảm giá">
-                                                                        <Input onChange={(e) => this.onChangeGG(e)}></Input>
+                                                                        <Input disabled onChange={(e) => this.onChangeGG(e)}></Input>
                                                                     </Form.Item>
                                                                 </Col>
                                                                 <div className="spaceCol"></div>
                                                                 <Col span={24}>
                                                                     <Form.Item name="CantraNCC" label='Cần trả NCC'>
-                                                                        <Input onChange={(e) => this.onChangeCanTra(e)}></Input>
+                                                                        <Input disabled></Input>
                                                                     </Form.Item>
                                                                 </Col>
                                                                 <div className="spaceCol"></div>
@@ -346,7 +579,7 @@ class AddModal extends Component {
                                                                 <div className="spaceCol"></div>
                                                                 <Col span={24}>
                                                                     <Form.Item name="TiennoNCC" label="Tiền nợ NCC">
-                                                                        <Input onChange={(e) => this.onChangeNo(e)}></Input>
+                                                                        <Input disabled></Input>
                                                                     </Form.Item>
                                                                 </Col>
                                                                 <div className="spaceCol"></div>
@@ -360,7 +593,7 @@ class AddModal extends Component {
                                                     </Form>
                                                     
                                                 </TabPane>
-                                                <TabPane tab="Thông tin chi tiết" key="2">
+                                                <TabPane tab="Thông tin thêm" key="2">
 
                                                 </TabPane>
                                             </Tabs>
@@ -370,7 +603,17 @@ class AddModal extends Component {
                             </Row>
                         </Layout>
                     <Footer>
-
+                        <Row>
+                            <Col span={12} offset={15}>
+                                <Space>
+                                    <Button className="ButtonModal">Lưu tạm</Button>
+                                    <Button className="ButtonModal">Hoàn thành</Button>
+                                    <Button className="ButtonModal">Import</Button>
+                                    <Button className="ButtonModal">Làm mới</Button>
+                                    <Button className="ButtonModal">Đóng</Button>
+                                </Space>
+                            </Col>
+                        </Row>
                     </Footer>
                 </Layout>
             </div>

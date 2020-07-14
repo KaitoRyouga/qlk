@@ -2,8 +2,9 @@ import React, { Component } from 'react'
 import './NavBar.css'
 import Home from "./Home";
 import AddModal from './AddModal.js'
+import SearchForm from './SearchForm'
 
-import { Typography, Layout, Divider, Row, Col, Menu, Button, Space } from 'antd'
+import { Typography, Layout, Divider, Row, Col, Menu } from 'antd'
 import { CaretDownOutlined, MinusSquareOutlined, PlusSquareOutlined } from '@ant-design/icons'
 
 import { Collapse } from 'antd';
@@ -16,7 +17,7 @@ class NavBar extends Component {
 
     state = {
         Qlnv: false,
-        ModalAddqlnv: false,
+        ModalAddqlnv: true,
         infoCopy: [],
         infoView: [],
         action: null,
@@ -24,7 +25,10 @@ class NavBar extends Component {
         data: [],
         expand: false,
         viewModal: false,
-        disableLayout: true
+        disableLayout: true,
+        selectRowsSearch: [],
+        ModalSearchForm: false,
+        rowCurrent: []
     }
 
     handleClickButton = (name) => {
@@ -126,6 +130,23 @@ class NavBar extends Component {
         this.handleClickColumnView()
     }
 
+    handleClickSearch = (values) =>  {
+        this.setState({
+            ModalAddqlnv: false,
+            Qlnv: false,
+            ModalSearchForm: true
+        })
+    }
+
+    handleClickChooseColumn = (selectRows) => {
+        this.setState({
+            selectRowsSearch: selectRows,
+            ModalAddqlnv: true,
+            Qlnv: false,
+            ModalSearchForm: false
+        })
+    }
+
     render() {
 
         const panel  = (
@@ -152,7 +173,7 @@ class NavBar extends Component {
             </div>
         )
 
-        const { Qlnv, ModalAddqlnv } = this.state
+        const { Qlnv, ModalAddqlnv, ModalSearchForm } = this.state
 
         return (
             <Layout className="LayoutHome">
@@ -305,24 +326,19 @@ class NavBar extends Component {
                         }
                         {
                             ModalAddqlnv && (
-                                <AddModal info={this.state.infoCopy} infoview={this.state.infoview} handleClickBack={this.handleClickBack} view={this.view}></AddModal>
+                                <AddModal selectRowsSearch={this.state.selectRowsSearch} handleClickSearch={this.handleClickSearch} info={this.state.infoCopy} infoview={this.state.infoview} handleClickBack={this.handleClickBack} view={this.view}></AddModal>
                             )
                         }
-                        <AddModal info={this.state.infoCopy} infoview={this.state.infoview} handleClickBack={this.handleClickBack} view={this.view}></AddModal>
+                        {/* <AddModal handleClickSearch={this.handleClickSearch} info={this.state.infoCopy} infoview={this.state.infoview} handleClickBack={this.handleClickBack} view={this.view}></AddModal> */}
+
+                        {
+                            ModalSearchForm && (
+                                <SearchForm handleClickChooseColumn={this.handleClickChooseColumn}></SearchForm>
+                            )
+                        }
                     </Content>
                 </Layout>
                 <Footer>
-                    <Row>
-                        <Col span={12} offset={15}>
-                            <Space>
-                                <Button className="ButtonModal">Lưu</Button>
-                                <Button className="ButtonModal">Hoàn thành</Button>
-                                <Button className="ButtonModal">Import</Button>
-                                <Button className="ButtonModal">Làm mới</Button>
-                                <Button className="ButtonModal">Đóng</Button>
-                            </Space>
-                        </Col>
-                    </Row>
                 </Footer>
             </Layout>
         )
