@@ -28,7 +28,8 @@ class NavBar extends Component {
         disableLayout: true,
         selectRowsSearch: [],
         ModalSearchForm: false,
-        rowCurrent: []
+        rowCurrent: [],
+        dataChange: []
     }
 
     handleClickButton = (name) => {
@@ -95,11 +96,9 @@ class NavBar extends Component {
         this.setState({
             infoCopy: newInfo
         })
-        // console.log(this.state.infoCopy)
     }
 
     handleClickColumn = (info) => {
-        console.log(info)
         this.setState({
             infoCopy: info
         })
@@ -144,6 +143,15 @@ class NavBar extends Component {
             ModalAddqlnv: true,
             Qlnv: false,
             ModalSearchForm: false
+        })
+    }
+
+    handlePushDataToHome = (data) => {
+        this.setState({
+            ModalAddqlnv: false,
+            Qlnv: true,
+            disableLayout: false,
+            dataChange: data
         })
     }
 
@@ -321,12 +329,12 @@ class NavBar extends Component {
                     <Content>
                         {
                             Qlnv && (
-                                <Home handleExport={this.handleExport} handleClickColumn={this.handleClickColumn} handleClickEdit={this.handleClickEdit} action={this.state.action} handleClickButton={this.handleClickButton} handleClickView={this.handleClickView}></Home>
+                                <Home dataChange={this.state.dataChange} handleExport={this.handleExport} handleClickColumn={this.handleClickColumn} handleClickEdit={this.handleClickEdit} action={this.state.action} handleClickButton={this.handleClickButton} handleClickView={this.handleClickView}></Home>
                             )
                         }
                         {
                             ModalAddqlnv && (
-                                <AddModal selectRowsSearch={this.state.selectRowsSearch} handleClickSearch={this.handleClickSearch} info={this.state.infoCopy} infoview={this.state.infoview} handleClickBack={this.handleClickBack} view={this.view}></AddModal>
+                                <AddModal handlePushDataToHome={this.handlePushDataToHome} selectRowsSearch={this.state.selectRowsSearch} handleClickSearch={this.handleClickSearch} info={this.state.infoCopy} infoview={this.state.infoview} handleClickBack={this.handleClickBack} view={this.view}></AddModal>
                             )
                         }
                         {/* <AddModal handleClickSearch={this.handleClickSearch} info={this.state.infoCopy} infoview={this.state.infoview} handleClickBack={this.handleClickBack} view={this.view}></AddModal> */}

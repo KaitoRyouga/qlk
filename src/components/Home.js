@@ -4,22 +4,24 @@ import './Home.css'
 import { Col, Row, Typography, Form, Input, Button, List, Table, Select  } from 'antd'
 import { CSVLink } from "react-csv"
 import { DatePicker } from 'antd';
+import moment from 'moment';
+import FixIndex from './FixIndex'
 
 const { Option } = Select;
 const { RangePicker } = DatePicker;
 
-const nhanvien = [
+let nhanvien = [
     {
       key: 1,
       index: 1,
       Chinhanh: 'Hồ chí minh',
       Maphieu: 'PKK20180819',
-      Ngaylapphieu: "19/08/2018 : 16:00",
-      Nhacungcap: "Công ty TNHH Bulter Viet Nam",
-      Nguoilapphieu: "Nguyễn Văn A",
+      Ngaytao: 1579911400000,
+      NCC: "Công ty TNHH Bulter Viet Nam",
+      Nguoitao: "Nguyễn Văn A",
       Tongtienhang: 5000000,
       Giamgia: 100000,
-      Datra: 4900000,
+      TiendatraNCC: 4900000,
       Trangthai: "Hoàn thành",
       Ghichu: "",
     }
@@ -65,18 +67,24 @@ const columns = [
     },
     {
         title: 'Ngày lập phiếu',
-        dataIndex: 'Ngaylapphieu',
-        key: 'Ngaylapphieu'
+        dataIndex: 'Ngaytao',
+        key: 'Ngaytao',
+        render: (Ngaytao) => {
+            console.log(Ngaytao)
+            return(
+                <DatePicker defaultValue={Ngaytao}></DatePicker>
+            )
+        }
     },
     {
         title: 'Nhà cung cấp',
-        dataIndex: 'Nhacungcap',
-        key: 'Nhacungcap'
+        dataIndex: 'NCC',
+        key: 'NCC'
     },
     {
         title: 'Người lập phiếu',
-        dataIndex: 'Nguoilapphieu',
-        key: 'Nguoilapphieu'
+        dataIndex: 'Nguoitao',
+        key: 'Nguoitao'
     },
     {
         title: 'Tổng tiền hàng',
@@ -90,8 +98,8 @@ const columns = [
     },
     {
         title: 'Đã trả',
-        dataIndex: 'Datra',
-        key: 'Datra'
+        dataIndex: 'TiendatraNCC',
+        key: 'TiendatraNCC'
     },
     {
         title: 'Trạng thái',
@@ -112,6 +120,7 @@ class Home extends Component {
         this.exportBtn = React.createRef();
         this.SearchBtn = React.createRef();
     }
+
     handleClickRoot = (MaNhanvien) => {
         this.props.handleClickView(MaNhanvien)
     }
@@ -223,7 +232,7 @@ class Home extends Component {
             })
         }
 
-        console.log(this.props)
+        // console.log(this.props)
     }
 
     componentDidMount() {
@@ -231,7 +240,13 @@ class Home extends Component {
             dataSource: this.props.nhanvien,
         })
 
-        console.log(this.props)
+        let dataTemp = this.props.dataChange
+        let data = [].concat(nhanvien, dataTemp)
+
+        nhanvien = data
+
+        FixIndex(nhanvien)
+
     }
 
     render() {
@@ -250,7 +265,6 @@ class Home extends Component {
               title: '#',
               dataIndex: 'index',
               key: 'index',
-            //   render: text => <a>{text}</a>,
             },
             {
               title: 'Chi nhánh',
@@ -264,18 +278,25 @@ class Home extends Component {
             },
             {
                 title: 'Ngày lập phiếu',
-                dataIndex: 'Ngaylapphieu',
-                key: 'Ngaylapphieu'
+                dataIndex: 'Ngaytao',
+                key: 'Ngaytao',
+                render: (Ngaytao) => {
+                    return(
+                        <span>
+                            {moment(Ngaytao).format('DD/MM/YYYY : HH:mm')}
+                        </span>
+                    )
+                }
             },
             {
                 title: 'Nhà cung cấp',
-                dataIndex: 'Nhacungcap',
-                key: 'Nhacungcap'
+                dataIndex: 'NCC',
+                key: 'NCC'
             },
             {
                 title: 'Người lập phiếu',
-                dataIndex: 'Nguoilapphieu',
-                key: 'Nguoilapphieu'
+                dataIndex: 'Nguoitao',
+                key: 'Nguoitao'
             },
             {
                 title: 'Tổng tiền hàng',
@@ -289,8 +310,8 @@ class Home extends Component {
             },
             {
                 title: 'Đã trả',
-                dataIndex: 'Datra',
-                key: 'Datra'
+                dataIndex: 'TiendatraNCC',
+                key: 'TiendatraNCC'
             },
             {
                 title: 'Trạng thái',

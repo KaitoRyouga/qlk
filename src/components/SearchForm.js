@@ -222,13 +222,15 @@ export default class SearchForm extends Component {
     }
 
     handleClickChooseColumn = () => {
-        // console.log(this.state.selectedRows)
+
         this.props.handleClickChooseColumn(this.state.selectedRows)
     }
 
     handleClickChooseColumnImage = (item) => {
-        // console.log(item)
-        // this.props.handleClickChooseColumn(item)
+
+        this.setState({
+            selectedRows: [item]
+        })
     }
 
     render() {
@@ -236,7 +238,6 @@ export default class SearchForm extends Component {
         const rowSelection = {
             onChange: (selectedRowKeys, selectedRows) => {
 
-                // console.log(selectedRows)
                 // this.props.handleClickColumn(selectedRows)
                 this.setState({
                     selectedRows: selectedRows

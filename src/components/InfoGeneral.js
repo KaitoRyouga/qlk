@@ -13,16 +13,9 @@ export default function InfoGeneral(data){
         Thanhtien = Number(item.Thanhtien) + Number(Thanhtien)
     });
 
-    // console.log(Giamgia)
-    // console.log(Soluong)
-    // console.log(Thanhtien)
-    // console.log(data)
-
     dataArr.Giamgia = Giamgia
     dataArr.Soluong = Soluong
-    dataArr.Thanhtien = Giamgia
-
-    // console.log(dataArr)
+    dataArr.Thanhtien = Thanhtien
 
     return dataArr
 }
