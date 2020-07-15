@@ -1,5 +1,3 @@
-import React from 'react'
-
 export default function duplicate(Object1, Object2) {
 
     const Object = [].concat(Object1, Object2)

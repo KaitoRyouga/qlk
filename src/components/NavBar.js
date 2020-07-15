@@ -16,8 +16,8 @@ const { Header, Content, Footer, Sider } = Layout;
 class NavBar extends Component {
 
     state = {
-        Qlnv: false,
-        ModalAddqlnv: true,
+        Qlnv: true,
+        ModalAddqlnv: false,
         infoCopy: [],
         infoView: [],
         action: null,
@@ -25,7 +25,7 @@ class NavBar extends Component {
         data: [],
         expand: false,
         viewModal: false,
-        disableLayout: true,
+        disableLayout: false,
         selectRowsSearch: [],
         ModalSearchForm: false,
         rowCurrent: [],
@@ -47,11 +47,14 @@ class NavBar extends Component {
                 })
                 break;
             case "Sao chép":
+                let infoTemp = [].concat(this.state.infoCopy, {action: 'copy'})
+
                 this.setState({
                     ModalAddqlnv: true,
                     Qlnv: false,
-                    action: 'copy'
+                    infoCopy: infoTemp
                 })
+
                 break;
 
             case "Chỉnh sửa":
@@ -64,8 +67,12 @@ class NavBar extends Component {
                 this.handleClickEdit()
                 break;
 
-            case "Xóa":
-                // this.props.DeleteNV(this.state.infoCopy[0].MaNhanvien)
+            case "Hủy phiếu":
+                let infoDeleteTemp = [].concat(this.state.infoCopy, {action: 'delete'})
+
+                this.setState({
+                    infoCopy: infoDeleteTemp
+                })
                 break;
             
             case "Xuất file":
@@ -92,13 +99,14 @@ class NavBar extends Component {
     }
 
     handleClickEdit = () => {
-        let newInfo = [].concat(this.state.infoCopy, [{action: 'edit'}])
+        let newInfo = [].concat(this.state.infoCopy, {action: 'edit'})
         this.setState({
             infoCopy: newInfo
         })
     }
 
     handleClickColumn = (info) => {
+        // console.log(info)
         this.setState({
             infoCopy: info
         })
@@ -147,11 +155,22 @@ class NavBar extends Component {
     }
 
     handlePushDataToHome = (data) => {
+
+        try {
+            if(this.state.infoCopy[1].action == 'edit'){
+                // console.log(data)
+                data.action = 'edit'
+            }
+        } catch (error) {
+            
+        }
+
         this.setState({
             ModalAddqlnv: false,
             Qlnv: true,
             disableLayout: false,
-            dataChange: data
+            dataChange: data,
+            
         })
     }
 

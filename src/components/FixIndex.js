@@ -1,12 +1,10 @@
-import React from 'react'
-
 export default function FixIndex(nhanvien) {
 
-    let index = 1
+    let indexCount = 1
     nhanvien.forEach(item => {
-        item.index = index
-        item.key = index
-        index = index + 1
+        item.index = indexCount
+        item.key = indexCount
+        indexCount = indexCount + 1
     });
 
     return(

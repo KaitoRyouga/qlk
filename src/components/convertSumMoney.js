@@ -1,5 +1,3 @@
-import React from 'react'
-
 export default function convertSumMoney(data){
 
     let Thanhtien = 0

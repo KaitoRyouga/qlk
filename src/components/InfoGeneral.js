@@ -1,5 +1,3 @@
-import React from 'react'
-
 export default function InfoGeneral(data){
     let Giamgia = 0
     let Soluong = 0

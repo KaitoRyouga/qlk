@@ -134,9 +134,12 @@ class Home extends Component {
         data2: [],
         dataSource: [],
         dataSourceTemp: [],
+        datanhanvien: []
     }
 
     handleExport = () => {
+
+        console.log(this.state.data2)
 
         const headers = []
         const data = []
@@ -149,15 +152,14 @@ class Home extends Component {
             try {
                 data.push({
                     index: this.state.data2[index].index,
-                    MaNhanvien: this.state.data2[index].MaNhanvien,
-                    TenNhanvien: this.state.data2[index].TenNhanvien,
                     Chinhanh: this.state.data2[index].Chinhanh,
-                    Chucvu: this.state.data2[index].Chucvu,
-                    Email: this.state.data2[index].Email,
-                    SDT: this.state.data2[index].SDT,
-                    CMND: this.state.data2[index].CMND,
-                    NS: this.state.data2[index].Ngaycap,
-                    Diachi: this.state.data2[index].Diachi,
+                    Maphieu: this.state.data2[index].Maphieu,
+                    Ngaytao: this.state.data2[index].Ngaytao,
+                    NCC: this.state.data2[index].NCC,
+                    Nguoitao: this.state.data2[index].Nguoitao,
+                    Tongtienhang: this.state.data2[index].Tongtienhang,
+                    Giamgia: this.state.data2[index].Giamgia,
+                    TiendatraNCC: this.state.data2[index].TiendatraNCC,
                     Trangthai: this.state.data2[index].Trangthai,
                 })
             } catch (error) {
@@ -231,22 +233,95 @@ class Home extends Component {
                 dataSource: this.props.nhanvienSearch
             })
         }
-
-        // console.log(this.props)
     }
 
     componentDidMount() {
+
         this.setState({
             dataSource: this.props.nhanvien,
+            datanhanvien: nhanvien
         })
 
         let dataTemp = this.props.dataChange
-        let data = [].concat(nhanvien, dataTemp)
 
-        nhanvien = data
+        try {
 
-        FixIndex(nhanvien)
+            if(dataTemp.action === 'edit'){
+                let dataEdit = nhanvien.findIndex(nv => {
+                    return(
+                        nv.Maphieu === dataTemp.Maphieu
+                    )
+                })
+        
+                let dataEditkey = nhanvien.find(nv => {
+                    return(
+                        nv.Maphieu === dataTemp.Maphieu
+                    )
+                })
+    
+                let newNV1 = nhanvien.slice(0, dataEdit)
+                let newNV3 = nhanvien.slice(dataEdit+1, nhanvien.length)
+        
+        
+                let newNV12 = [].concat(newNV1, dataTemp)
+                let newNV = [].concat(newNV12, newNV3)
+    
+                nhanvien = newNV
 
+                FixIndex(nhanvien)
+
+                this.setState({
+                    datanhanvien: nhanvien
+                })
+            }
+            else{
+                let data = [].concat(nhanvien, dataTemp)
+
+                nhanvien = data
+        
+                FixIndex(nhanvien)
+
+                this.setState({
+                    datanhanvien: nhanvien
+                })
+            }
+        } catch (error) {
+            let data = [].concat(nhanvien, dataTemp)
+
+            nhanvien = data
+    
+            FixIndex(nhanvien)
+
+            this.setState({
+                datanhanvien: nhanvien
+            })
+        }
+
+    }
+
+    handleClickRemove = () => {
+
+        let nhanvienAfterDelete = []
+
+        this.state.data2.forEach(item => {
+            let itemTemp = item
+            if(nhanvienAfterDelete.length !== 0){
+                nhanvien = nhanvienAfterDelete
+                nhanvienAfterDelete = []
+            }
+            nhanvienAfterDelete = nhanvien.filter(nv => {
+                return(
+                    nv.Maphieu !== itemTemp.Maphieu
+                )
+            })
+
+        });
+
+        nhanvien = nhanvienAfterDelete
+
+        this.setState({
+            datanhanvien: nhanvien
+        })
     }
 
     render() {
@@ -363,7 +438,7 @@ class Home extends Component {
                                     </Form.Item>
                                 </Col>
                                 <Col span={8} offset={3}>
-                                    <Form.Item name="Ngaylapphieu" label="Ngày lập phiếu">
+                                    <Form.Item name="Ngaytao" label="Ngày lập phiếu">
                                         <RangePicker />
                                     </Form.Item>
                                 </Col>
@@ -372,16 +447,16 @@ class Home extends Component {
                                 <Col span={8}>
                                     <Form.Item name="Trangthai" label="Trạng thái">
                                         <Select>
-                                            <Option value="Hoanthanh">Hoàn thành</Option>
-                                            <Option value="Huy">Hủy</Option>
+                                            <Option value="Hoàn thành">Hoàn thành</Option>
+                                            <Option value="Hủy">Hủy</Option>
                                         </Select>
                                     </Form.Item>
                                 </Col>
                                 <Col span={8} offset={3}>
-                                    <Form.Item name="Nguoilapphieu" label="Người lập phiếu">
+                                    <Form.Item name="Nguoitao" label="Người lập phiếu">
                                         <Select>
-                                            <Option value="Nguyenvana">Nguyễn Văn A</Option>
-                                            <Option value="Nguyenvanb">Nguyễn Văn B</Option>
+                                            <Option value="Nguyễn Văn A">Nguyễn Văn A</Option>
+                                            <Option value="Nguyễn Văn B">Nguyễn Văn B</Option>
                                         </Select>
                                     </Form.Item>
                                 </Col>
@@ -424,6 +499,10 @@ class Home extends Component {
                                                 if(item.content === "Tìm kiếm"){
                                                     this.SearchBtn.current.click()
                                                 }
+
+                                                if(item.content === 'Hủy phiếu'){
+                                                    this.handleClickRemove()
+                                                }
                                                 
                                                 this.props.handleClickButton(item.content)
                                             }} value={item.content} className="ButtonContent" shape="round">
@@ -441,7 +520,7 @@ class Home extends Component {
                 <div className="BoxContentBottom">
                     <Table
                         columns={columns}
-                        dataSource={nhanvien}
+                        dataSource={this.state.datanhanvien}
                         bordered
                         rowSelection={{
                             type: "checkbox",

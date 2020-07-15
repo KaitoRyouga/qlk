@@ -253,6 +253,60 @@ class AddModal extends Component {
 
     componentDidMount(){
 
+        // console.log(this.props.info)
+
+        try {
+            switch (this.props.info[1].action) {
+                case 'copy':
+                    try {
+                        this.setState({
+                            dataP: this.props.info[0].dataEdit[0]
+                        })
+                    } catch (error) {
+                        console.log(error)
+                    }
+    
+                    this.formRef.current.setFieldsValue({
+                        Nguoitao: this.props.info[0].Nguoitao,
+                        NCC: this.props.info[0].NCC,
+                        Tongtienhang: this.props.info[0].Tongtienhang,
+                        Tongtienhang: this.props.info[0].Tongtienhang,
+                        CantraNCC: this.props.info[0].CantraNCC,
+                        TiennoNCC: this.props.info[0].TiennoNCC,
+                        Tongsoluong: this.props.info[0].Tongsoluong,
+                    })
+                    break;
+
+                case 'edit':
+                    try {
+                        this.setState({
+                            dataP: this.props.info[0].dataEdit[0]
+                        })
+                    } catch (error) {
+                        console.log(error)
+                    }
+
+                    this.formRef.current.setFieldsValue({
+                        Nguoitao: this.props.info[0].Nguoitao,
+                        NCC: this.props.info[0].NCC,
+                        Tongtienhang: this.props.info[0].Tongtienhang,
+                        Maphieu: this.props.info[0].Maphieu,
+                        Tongsoluong: this.props.info[0].Tongsoluong,
+                        Giamgia: this.props.info[0].Giamgia,
+                        Tongtienhang: this.props.info[0].Tongtienhang,
+                        CantraNCC: this.props.info[0].CantraNCC,
+                        TiennoNCC: this.props.info[0].TiennoNCC,
+                        TiendatraNCC: this.props.info[0].TiendatraNCC,
+
+                    })
+            
+                default:
+                    break;
+            }
+        } catch (error) {
+
+        }
+
         if(this.props.selectRowsSearch.length !== 0){
 
             let selectRowsSearch = this.props.selectRowsSearch
@@ -281,20 +335,25 @@ class AddModal extends Component {
             dataArr: dataArr
         })
 
-        let random = Math.random().toString(36);
-        random = random.slice(random.length - 3, random.length).toUpperCase()
-        let utc = new Date().toJSON().slice(0,10).replace(/-/g,'');
-        
+        try {
+            if(this.props.info[1].action){
 
-        this.formRef.current.setFieldsValue({
-            Tongsoluong: financial(dataArr.Soluong),
-            Giamgia: financial(dataArr.Giamgia),
-            Tongtienhang: financial(dataArr.Thanhtien),
-            CantraNCC: financial(dataArr.Thanhtien),
-            TiendatraNCC: '0',
-            TiennoNCC: financial(dataArr.Thanhtien),
-            Maphieu: random + utc
-        })
+            }
+        } catch (error) {
+            let random = Math.random().toString(36);
+            random = random.slice(random.length - 3, random.length).toUpperCase()
+            let utc = new Date().toJSON().slice(0,10).replace(/-/g,'');   
+
+            this.formRef.current.setFieldsValue({
+                Tongsoluong: financial(dataArr.Soluong),
+                Giamgia: financial(dataArr.Giamgia),
+                Tongtienhang: financial(dataArr.Thanhtien),
+                CantraNCC: financial(dataArr.Thanhtien),
+                TiendatraNCC: '0',
+                TiennoNCC: financial(dataArr.Thanhtien),
+                Maphieu: random + utc
+            })
+        }
         
     }
 
@@ -392,9 +451,9 @@ class AddModal extends Component {
     onFinish = (values) => {
         values.Trangthai = this.state.Trangthai
         values.dataEdit = this.state.dataP
-        // console.log(this.state.Trangthai)
+        // console.log()
         this.props.handlePushDataToHome(values)
-        console.log(values)
+        // console.log(values)
     }
 
 
