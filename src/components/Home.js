@@ -6,6 +6,8 @@ import { CSVLink } from "react-csv"
 import { DatePicker } from 'antd';
 import moment from 'moment';
 import FixIndex from './FixIndex'
+import SearchHome from './SearchHome'
+import duplicate from './duplicate';
 
 const { Option } = Select;
 const { RangePicker } = DatePicker;
@@ -70,7 +72,6 @@ const columns = [
         dataIndex: 'Ngaytao',
         key: 'Ngaytao',
         render: (Ngaytao) => {
-            console.log(Ngaytao)
             return(
                 <DatePicker defaultValue={Ngaytao}></DatePicker>
             )
@@ -138,8 +139,6 @@ class Home extends Component {
     }
 
     handleExport = () => {
-
-        console.log(this.state.data2)
 
         const headers = []
         const data = []
@@ -209,8 +208,63 @@ class Home extends Component {
 
     onFinish = values => {
         console.log('Success:', values);
-        this.props.SearchNV(values)
+        // this.props.SearchNV(values)
+        this.handleClickSearchHome(values)
     };
+
+    handleClickSearchHome = (values) => {
+
+        this.setState({
+            datanhanvien: nhanvien
+        })
+
+        let dataTempChinhanh = SearchHome('Chinhanh' ,values.Chinhanh, this.state.datanhanvien)
+        let dataTempMaphieu = SearchHome('Maphieu' ,values.Maphieu, this.state.datanhanvien)
+        let dataTempNguoitao = SearchHome('Nguoitao' ,values.Nguoitao, this.state.datanhanvien)
+        let dataTempTrangthai = SearchHome('Trangthai' ,values.Trangthai, this.state.datanhanvien)
+
+        let dataTempNgayTao = []
+        try {
+            let dataTempNgayTao1 = SearchHome('Ngaytao1' ,values.Ngaytao[0], this.state.datanhanvien)
+            let dataTempNgayTao2 = SearchHome('Ngaytao2' ,values.Ngaytao[1], this.state.datanhanvien)
+
+            for (let index = 0; index < dataTempNgayTao1.length; index++) {
+                for (let index2 = 0; index2 < dataTempNgayTao2.length; index2++) {
+                    if(dataTempNgayTao1[index] == dataTempNgayTao2[index2]){
+                        dataTempNgayTao.push(dataTempNgayTao1[index])
+                    }
+                }
+                
+            }
+        } catch (error) {
+            
+        }
+
+        // console.log(dataTempNgayTao1)
+        // console.log(dataTempNgayTao1[0] == dataTempNgayTao2[1])
+
+
+        // if(dataTempNgayTao.length === 0){
+        //     dataTempNgayTao.push({notify: 0})
+        // }
+
+
+        let dataTemp1 = [].concat(dataTempChinhanh, dataTempMaphieu, dataTempNguoitao, dataTempTrangthai)
+        
+        let dataTemp = duplicate(dataTemp1, dataTempNgayTao)
+
+        try {
+            if(dataTempChinhanh[0].notify === 0 || dataTempMaphieu[0].notify === 0 || dataTempNguoitao[0].notify === 0 || dataTempTrangthai[0].notify === 0 || dataTempNgayTao[0].notify === 0){
+                dataTemp = []
+            }
+        } catch (error) {
+            
+        }
+
+        this.setState({
+            datanhanvien: dataTemp
+        })
+    }
 
     onFinishFailed = errorInfo => {
         console.log('Failed:', errorInfo);
@@ -410,6 +464,7 @@ class Home extends Component {
                 <div className="BoxContentBottom">
                     <div className="InputNV">
                         <Form
+                            id="formSearchHome"
                             onFinish={this.onFinish}
                             onFinishFailed={this.onFinishFailed}
                         >

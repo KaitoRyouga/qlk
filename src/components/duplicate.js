@@ -9,5 +9,12 @@ export default function duplicate(Object1, Object2) {
 
 
     // console.log(unique)
-    return unique
+
+    let unique2 =  unique.filter(item => {
+        return !item.notify
+    });
+
+    console.log(unique2)
+
+    return unique2
 }

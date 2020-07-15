@@ -608,7 +608,7 @@ class AddModal extends Component {
                                                         <Space>
                                                             <Row>
                                                                 <Col span={24}>
-                                                                    <Form.Item name="Nguoitao" label="Người tạo" rules={[{ required: true, message: 'Ô này không được để trống !!!' }]}>
+                                                                    <Form.Item name="Nguoitao" label="Người tạo" rules={[{ required: false, message: 'Ô này không được để trống !!!' }]}>
                                                                         <Select>
                                                                             <Option value="Nguyễn Văn A">Nguyễn Văn A</Option>
                                                                             <Option value="Nguyễn Văn B">Nguyễn Văn B</Option>
@@ -618,7 +618,7 @@ class AddModal extends Component {
                                                                 <div className="spaceCol"></div>
                                                                 <Col span={24}>
                                                                     <Form.Item label="Ngày tạo" name="Ngaytao">
-                                                                        <DatePicker disabled showTime={true} showToday={true}></DatePicker>
+                                                                        <DatePicker showTime={true} showToday={true}></DatePicker>
                                                                     </Form.Item>
                                                                 </Col>
                                                                 <div className="spaceCol"></div>
@@ -629,7 +629,7 @@ class AddModal extends Component {
                                                                 </Col>
                                                                 <div className="spaceCol"></div>
                                                                 <Col span={24}>
-                                                                    <Form.Item name="NCC" label="NCC" rules={[{ required: true, message: 'Ô này không được để trống !!!' }]}>
+                                                                    <Form.Item name="NCC" label="NCC" rules={[{ required: false, message: 'Ô này không được để trống !!!' }]}>
                                                                         <Select>
                                                                             <Option value="NCC1">NCC 1</Option>
                                                                             <Option value="NCC2">NCC 2</Option>
