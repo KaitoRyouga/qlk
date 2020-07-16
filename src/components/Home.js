@@ -8,6 +8,7 @@ import moment from 'moment';
 import FixIndex from './FixIndex'
 import SearchHome from './SearchHome'
 import duplicate from './duplicate';
+import financial from './financial'
 
 const { Option } = Select;
 const { RangePicker } = DatePicker;
@@ -55,7 +56,6 @@ const columns = [
       title: '#',
       dataIndex: 'index',
       key: 'index',
-    //   render: text => <a>{text}</a>,
     },
     {
       title: 'Chi nhánh',
@@ -193,7 +193,7 @@ class Home extends Component {
                     active: false
                 })
                 }
-              }, 1000);
+              }, 1);
             }
         }
     }
@@ -434,17 +434,26 @@ class Home extends Component {
             {
                 title: 'Tổng tiền hàng',
                 dataIndex: 'Tongtienhang',
-                key: 'Tongtienhang'
+                key: 'Tongtienhang',
+                render: (Tongtienhang) => {
+                    return <span>{financial(Tongtienhang)}</span>
+                }
             },
             {
                 title: 'Giảm giá',
                 dataIndex: 'Giamgia',
-                key: 'Giamgia'
+                key: 'Giamgia',
+                render: (Giamgia) => {
+                    return <span>{financial(Giamgia)}</span>
+                }
             },
             {
                 title: 'Đã trả',
                 dataIndex: 'TiendatraNCC',
-                key: 'TiendatraNCC'
+                key: 'TiendatraNCC',
+                render: (TiendatraNCC) => {
+                    return <span>{financial(TiendatraNCC)}</span>
+                }
             },
             {
                 title: 'Trạng thái',
@@ -543,7 +552,7 @@ class Home extends Component {
                                                 {
                                                     this.state.active ? (
                                                         
-                                                        <CSVLink ref={this.exportBtn} data={this.state.data} headers={this.state.headers}></CSVLink>
+                                                        <CSVLink ref={this.exportBtn} data={this.state.datanhanvien} headers={this.state.headers}></CSVLink>
                                                     ) : null
                                                 }
                                             </Button>

@@ -5,13 +5,14 @@ import './App.css';
 import NavBar from "./components/NavBar";
 import PrintBill from "./components/PrintBill";
 
+
+// import ImportXlsx from "./components/importXlsx";
+
 class App extends Component {
 
   render() {
     return (
       <div className="App">
-          {/* <NavBar></NavBar>
-          <PrintBill></PrintBill> */}
 
       <BrowserRouter>
         <Switch>
@@ -19,6 +20,7 @@ class App extends Component {
           <Route path="/print" component={PrintBill}></Route>
         </Switch>
       </BrowserRouter>
+
       </div>
     )
   }

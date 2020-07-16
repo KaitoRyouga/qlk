@@ -40,11 +40,14 @@ class NavBar extends Component {
 
                 break;
             case "Thêm":
+                let infoTempAdd = [].concat(this.state.infoCopy, {action: 'add'})
+
                 this.setState({
                     ModalAddqlnv: !this.state.ModalAddqlnv,
                     Qlnv: false,
                     infoCopy: [],
-                    disableLayout: true
+                    disableLayout: true,
+                    infoCopy: infoTempAdd
                 })
                 break;
             case "Sao chép":
@@ -179,7 +182,7 @@ class NavBar extends Component {
     }
 
     handleClickMaphieu = (Maphieu) => {
-        // console.log(Maphieu)
+        console.log(Maphieu)
         // let infophieu = this.state.
         this.setState({
             ModalAddqlnv: true,
@@ -190,7 +193,16 @@ class NavBar extends Component {
     }
 
     handleChangeEdit = () => {
+        // console.log('kaito')
         this.handleClickButton('Chỉnh sửa')
+    }
+
+    handleClose = () => {
+        this.setState({
+            ModalAddqlnv: false,
+            Qlnv: true,
+            disableLayout: false
+        })
     }
 
     render() {
@@ -372,7 +384,7 @@ class NavBar extends Component {
                         }
                         {
                             ModalAddqlnv && (
-                                <AddModal handleChangeEdit={this.handleChangeEdit} infoPhieu={this.state.infoPhieu} handlePushDataToHome={this.handlePushDataToHome} selectRowsSearch={this.state.selectRowsSearch} handleClickSearch={this.handleClickSearch} info={this.state.infoCopy} infoview={this.state.infoview} handleClickBack={this.handleClickBack} view={this.view}></AddModal>
+                                <AddModal handleClose={this.handleClose} handleChangeEdit={this.handleChangeEdit} infoPhieu={this.state.infoPhieu} handlePushDataToHome={this.handlePushDataToHome} selectRowsSearch={this.state.selectRowsSearch} handleClickSearch={this.handleClickSearch} info={this.state.infoCopy} infoview={this.state.infoview} handleClickBack={this.handleClickBack} view={this.view}></AddModal>
                             )
                         }
                         {/* <AddModal handleClickSearch={this.handleClickSearch} info={this.state.infoCopy} infoview={this.state.infoview} handleClickBack={this.handleClickBack} view={this.view}></AddModal> */}

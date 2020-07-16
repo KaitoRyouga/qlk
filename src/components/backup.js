@@ -1,11 +1,9 @@
 import React, { Component } from 'react';
 
-import { Modal, Typography, Layout, Divider, Row, Col, Form, Input, Button, Table, Space, Tabs, Select, InputNumber, DatePicker } from 'antd'
+import { Typography, Layout, Divider, Row, Col, Form, Input, Button, Table, Space, Tabs, Select, InputNumber, DatePicker } from 'antd'
 import { CloseOutlined } from '@ant-design/icons'
 import { withRouter } from 'react-router-dom'
 import { Redirect } from "react-router-dom";
-import moment from 'moment'
-import CSVReader from 'react-csv-reader'
 
 import duplicate from './duplicate'
 import convertSumMoney from './convertSumMoney'
@@ -20,7 +18,7 @@ function financial(x) {
 
     x = String(x).split(".").join("");
 
-    if(!Number(x)){
+    if(Number(x)){
         return null
     }
 
@@ -85,27 +83,96 @@ function financial(x) {
     }
   ];
 
-class AddModal extends Component {
+  const columns = [
+    {
+      title: '#',
+      dataIndex: 'index',
+      key: 'index',
+      render: (index, sp) => {
+          return(
+            <CloseOutlined disabled={this.state.infoPhieu} onClick={() => this.handleClickRemove(sp)} style={{cursor: "pointer"}}/>
+          )
+      }
+    },
+    {
+      title: 'Mã hàng',
+      dataIndex: 'Mahang',
+      key: 'Mahang',
+    },
+    {
+      title: 'Tên hàng',
+      dataIndex: 'Tenhang',
+      key: 'Tenhang',
+    },
+    {
+      title: 'ĐVT',
+      key: 'DVT',
+      dataIndex: 'DVT',
+    },
+    {
+      title: 'Số lượng',
+      key: 'Soluong',
+      dataIndex: 'Soluong',
+      render: (Soluong, Mahang) => {
+        return(
+            <InputNumber disabled={this.state.infoPhieu} onChange={(e) => {
+                this.onChangeInputRange(e, Mahang)
+            }} defaultValue={Soluong}></InputNumber>
+        )
+      }
+    },
+    {
+        title: 'Đơn giá',
+        key: 'Dongia',
+        dataIndex: 'Dongia',
+        render: (Dongia) => {         
+            return(  
+                <span>
+                    {financial(Dongia)}
+                </span>
+            )
+        }
+      },
+      {
+        title: 'Giảm giá',
+        key: 'Giamgia',
+        dataIndex: 'Giamgia',
+        render: (Giamgia) => {         
+            return(  
+                <Input disabled={this.state.infoPhieu} style={{width: '5em'}} defaultValue={Giamgia} onChange={(e) => this.onChangeGG(e)} value={financial(Giamgia)}></Input>
+            )
+        }
+      },
+      {
+        title: 'Thành tiền',
+        key: 'Thanhtien',
+        dataIndex: 'Thanhtien',
+        render: (Thanhtien) => {   
+            return(  
+                <span>
+                    {financial(Thanhtien)}
+                </span>
+            )
+        }
+      },
+      {
+        title: 'Ghi chú',
+        key: 'Ghichu',
+        dataIndex: 'Ghichu',
+        render: (Ghichu) => {
+            return(
+                <TextArea disabled={this.state.infoPhieu} style={{width: '10em'}} placeholder="Ghi chú"></TextArea>
+            )
+        }
+      },
+  ];
 
-    constructor(props) {
-        super(props);
-        this.importBtn = React.createRef();
-    }
+class AddModal extends Component {
 
     formRef = React.createRef();
 
-    isCsvFileReadyImport = () => {
-        return this.importBtn && 
-        this.importBtn.current &&
-        this.importBtn.current.link &&
-        this.importBtn.current.link.click &&
-        typeof this.importBtn.current.link.click === 'function';
-    }
-
     state = {
         reset: false,
-        visible: false,
-        resetFields: false,
         valueTTH: null,
         valueGG: null,
         valueCanTra: null,
@@ -130,27 +197,10 @@ class AddModal extends Component {
         dataArr: {},
         Trangthai: '',
         infoPhieu: false,
-        redirect: null,
-        Ngaytao: 0,
-        activeImport: false
+        redirect: null
     }
 
-    onChangeTTH = (e) => {
-        let numberTTH = e.target.value
-        let numberTTH2 = numberTTH.split(".").join("");
-        let numberTTH3 = financial(Number(numberTTH2))
-
-        this.setState({
-            valueTTH: numberTTH3
-        })
-
-        this.formRef.current.setFieldsValue({
-            Tongtienhang: numberTTH3
-        })
-    }
-
-    onChangeGG = (e, Mahang) => {
-
+    onChangeGG = (e) => {
         let numberTTH = e.target.value
         let numberTTH2 = numberTTH.split(".").join("");
         let numberTTH3 = financial(Number(numberTTH2))
@@ -164,27 +214,11 @@ class AddModal extends Component {
         })
 
         let dataTemp = this.state.dataP
-
-        let findData = this.state.dataP.findIndex(item => {
-            return Mahang.Tenhang === item.Tenhang
-        })
-
-        dataTemp[findData].Giamgia = numberTTH3
+        dataTemp[this.state.dataP.length - 1].Giamgia = numberTTH3
 
         let fix = convertSumMoney(dataTemp)
         this.setState({
             dataP: fix
-        })
-
-    }
-
-    onChangeCanTra = (e) => {
-        let numberTTH = e.target.value
-        let numberTTH2 = numberTTH.split(".").join("");
-        let numberTTH3 = financial(Number(numberTTH2))
-
-        this.setState({
-            valueTCanTra: numberTTH3
         })
 
     }
@@ -200,20 +234,6 @@ class AddModal extends Component {
 
         this.formRef.current.setFieldsValue({
             TiendatraNCC: numberTTH3
-        })
-    }
-
-    onChangeNo = (e) => {
-        let numberTTH = e.target.value
-        let numberTTH2 = numberTTH.split(".").join("");
-        let numberTTH3 = financial(Number(numberTTH2))
-
-        this.setState({
-            valueNo: e.target.value
-        })
-
-        this.formRef.current.setFieldsValue({
-            TiennoNCC: numberTTH3
         })
     }
 
@@ -245,15 +265,14 @@ class AddModal extends Component {
             })
         }
 
-        if(this.state.dataP !== data && this.state.resetFields === false){
+        if(this.state.dataP !== data){
             this.setState({
                 dataP: data
             })
 
+            // let valueDaTra = this.state.valueDaTra.split('.').join('')
             let ThanhtienTemp = 0
             let SoluongTemp = 0
-            let GGTemp = 0
-            let Tongtienhang = 0
 
             try {
                 data.forEach(item => {
@@ -267,28 +286,15 @@ class AddModal extends Component {
                 SoluongTemp = SoluongTemp + Number(item.Soluong)
             });
 
-            data.forEach(item => {
-                try {
-                    GGTemp = GGTemp + Number(item.Giamgia.split('.').join(''))
-                } catch (error) {
-                    GGTemp = GGTemp + Number(item.Giamgia)
-                }
-            });
-
-            Tongtienhang = Number(GGTemp) + Number(ThanhtienTemp)
-
             let Thanhtien = ThanhtienTemp
-
-            // console.log(GGTemp)
             
             let TiennoNCC = Number(Thanhtien) - Number(this.state.valueDaTra)
             TiennoNCC = financial(TiennoNCC)
             this.formRef.current.setFieldsValue({
                 TiennoNCC: TiennoNCC,
-                Tongtienhang: financial(Tongtienhang),
+                Tongtienhang: financial(Thanhtien),
                 CantraNCC: financial(Thanhtien),
-                Tongsoluong: SoluongTemp,
-                Giamgia: financial(GGTemp)
+                Tongsoluong: SoluongTemp
             })
         }
 
@@ -302,9 +308,10 @@ class AddModal extends Component {
             })
 
             this.setState({
-                dataP: this.props.infoPhieu,
-                Ngaytao: this.props.infoPhieu[0].Ngaytao
+                dataP: this.props.infoPhieu
             })
+
+            console.log(this.props.infoPhieu[0].Maphieu)
 
             this.formRef.current.setFieldsValue({
                 Nguoitao: this.props.infoPhieu[0].Nguoitao,
@@ -316,7 +323,6 @@ class AddModal extends Component {
                 CantraNCC: this.props.infoPhieu[0].CantraNCC,
                 TiennoNCC: this.props.infoPhieu[0].TiennoNCC,
                 TiendatraNCC: this.props.infoPhieu[0].TiendatraNCC,
-                Ngaytao: moment(this.props.infoPhieu[0].Ngaytao),
 
             })
 
@@ -366,7 +372,6 @@ class AddModal extends Component {
                         CantraNCC: this.props.info[0].CantraNCC,
                         TiennoNCC: this.props.info[0].TiennoNCC,
                         TiendatraNCC: this.props.info[0].TiendatraNCC,
-                        Ngaytao: moment(this.props.info[0].Ngaytao),
 
                     })
                     break
@@ -550,78 +555,17 @@ class AddModal extends Component {
 
     handleClickInphieu = () => {
         console.log('in phieu')
+        // console.log()
     }
 
-    handleClose = () => {
-        this.props.handleClose()
-    }
 
-    onReset = () => {
-        this.formRef.current.resetFields();
-        console.log('làm mới')
-        this.setState({
-            dataP: [],
-            resetFields: true
-        })
-    };
-
-    handleClickImport = (dataTranfer) => {
-        console.log(dataTranfer)
-        // console.log(columns)
-        let dataTemp = []
-        for (let index = 1; index < dataTranfer.length; index++) {
-            if(dataTranfer[index].length !== 1){
-                dataTemp.push({
-                    index: dataTranfer[index][0],
-                    key: dataTranfer[index][0],
-                    Mahang: dataTranfer[index][1],
-                    Tenhang: dataTranfer[index][2],
-                    DVT: dataTranfer[index][3],
-                    Soluong: dataTranfer[index][4],
-                    Dongia: dataTranfer[index][5],
-                    Giamgia: dataTranfer[index][6],
-                    Thanhtien: dataTranfer[index][7],
-                    Ghichu: dataTranfer[index][8],
-                })
-            }
-
-        }
-
-        data = dataTemp
-
-        this.setState({
-            dataP: dataTemp
-        })
-
-        // console.log(data)
-
-        this.reset()
-    }
-
-    showModal = () => {
-        this.setState({
-        visible: true,
-        });
-    };
-    
-    handleOk = e => {
-        console.log(e);
-        this.setState({
-            visible: false,
-        });
-    };
-    
-    handleCancel = e => {
-        console.log(e);
-        this.setState({
-            visible: false,
-        });
-    };
 
     render() {
 
         const rowSelection = {
             onChange: (selectedRowKeys, selectedRows) => {
+
+                // this.props.handleClickColumn(selectedRows)
                 this.setState({
                     selectedRows: selectedRows
                 })
@@ -635,7 +579,7 @@ class AddModal extends Component {
               key: 'index',
               render: (index, sp) => {
                   return(
-                    <CloseOutlined key={Math.random()} disabled={this.state.infoPhieu} onClick={() => this.handleClickRemove(sp)} style={{cursor: "pointer"}}/>
+                    <CloseOutlined disabled={this.state.infoPhieu} onClick={() => this.handleClickRemove(sp)} style={{cursor: "pointer"}}/>
                   )
               }
             },
@@ -682,9 +626,9 @@ class AddModal extends Component {
                 title: 'Giảm giá',
                 key: 'Giamgia',
                 dataIndex: 'Giamgia',
-                render: (Giamgia, Tenhang) => {         
+                render: (Giamgia) => {         
                     return(  
-                        <Input disabled={this.state.infoPhieu} style={{width: '5em'}} defaultValue={Giamgia} onChange={(e) => this.onChangeGG(e, Tenhang)} value={financial(Giamgia)}></Input>
+                        <Input disabled={this.state.infoPhieu} style={{width: '5em'}} defaultValue={Giamgia} onChange={(e) => this.onChangeGG(e)} value={financial(Giamgia)}></Input>
                     )
                 }
               },
@@ -712,7 +656,7 @@ class AddModal extends Component {
               },
           ];
 
-          if (this.state.redirect) {
+        if (this.state.redirect) {
             return <Redirect to={{
                 pathname: this.state.redirect,
                 data: this.state.valuesTranfer
@@ -824,7 +768,7 @@ class AddModal extends Component {
                                                                 <Col span={24}>
 
                                                                     <Form.Item name="Giamgia" label="Giảm giá">
-                                                                        <Input disabled onChange={(e) => this.onChangeGG(e)}></Input>
+                                                                        <Input disabled></Input>
                                                                     </Form.Item>
                                                                 </Col>
                                                                 <div className="spaceCol"></div>
@@ -872,9 +816,9 @@ class AddModal extends Component {
                                 <Col span={12} offset={15}>
                                     <Space>
                                         <Button onClick={() => this.handleChangeEdit()} className="ButtonModal">Chỉnh sửa</Button>
-                                        <Button onClick={() => this.onReset()} form="formAddT" key="submit" htmlType="submit" onClick={() => this.handleChangeTrangthai('In phiếu')} className="ButtonModal">In phiếu</Button>
+                                        <Button form="formAddT" key="submit" htmlType="submit" onClick={() => this.handleChangeTrangthai('In phiếu')} className="ButtonModal">In phiếu</Button>
                                         <Button className="ButtonModal">Xuất file</Button>
-                                        <Button onClick={() => this.handleClose()} className="ButtonModal">Đóng</Button>
+                                        <Button className="ButtonModal">Đóng</Button>
                                     </Space>
                                 </Col>
                             </Row>
@@ -884,21 +828,9 @@ class AddModal extends Component {
                                     <Space>
                                         <Button form="formAddT" key="submit" htmlType="submit" onClick={() => this.handleChangeTrangthai('Lưu tạm')} className="ButtonModal">Lưu tạm</Button>
                                         <Button form="formAddT" key="submit" htmlType="submit" onClick={() => this.handleChangeTrangthai('Hoàn thành')} className="ButtonModal">Hoàn thành</Button>
-                                        <Button onClick={() => this.showModal()} className="ButtonModal">
-                                            Import   
-                                        </Button>
-
-                                        <Modal
-                                            title="Basic Modal"
-                                            visible={this.state.visible}
-                                            onOk={this.handleOk}
-                                            onCancel={this.handleCancel}
-                                        >
-                                            <CSVReader onFileLoaded={(data) => this.handleClickImport(data)} />
-                                        </Modal>
-
-                                        <Button onClick={() => this.onReset()} className="ButtonModal">Làm mới</Button>
-                                        <Button onClick={() => this.handleClose()} className="ButtonModal">Đóng</Button>
+                                        <Button className="ButtonModal">Import</Button>
+                                        <Button className="ButtonModal">Làm mới</Button>
+                                        <Button className="ButtonModal">Đóng</Button>
                                     </Space>
                                 </Col>
                             </Row>
