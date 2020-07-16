@@ -222,6 +222,7 @@ class Home extends Component {
         let dataTempMaphieu = SearchHome('Maphieu' ,values.Maphieu, this.state.datanhanvien)
         let dataTempNguoitao = SearchHome('Nguoitao' ,values.Nguoitao, this.state.datanhanvien)
         let dataTempTrangthai = SearchHome('Trangthai' ,values.Trangthai, this.state.datanhanvien)
+        let dataTempThoigian = SearchHome('Thoigian' ,values.Thoigian, this.state.datanhanvien)
 
         let dataTempNgayTao = []
         try {
@@ -230,7 +231,7 @@ class Home extends Component {
 
             for (let index = 0; index < dataTempNgayTao1.length; index++) {
                 for (let index2 = 0; index2 < dataTempNgayTao2.length; index2++) {
-                    if(dataTempNgayTao1[index] == dataTempNgayTao2[index2]){
+                    if(dataTempNgayTao1[index] === dataTempNgayTao2[index2]){
                         dataTempNgayTao.push(dataTempNgayTao1[index])
                     }
                 }
@@ -240,18 +241,11 @@ class Home extends Component {
             
         }
 
-        // console.log(dataTempNgayTao1)
-        // console.log(dataTempNgayTao1[0] == dataTempNgayTao2[1])
+        // console.log(moment().day(2).format('DD/MM/YYYY : HH:mm'))
 
-
-        // if(dataTempNgayTao.length === 0){
-        //     dataTempNgayTao.push({notify: 0})
-        // }
-
-
-        let dataTemp1 = [].concat(dataTempChinhanh, dataTempMaphieu, dataTempNguoitao, dataTempTrangthai)
+        let dataTemp1 = [].concat(dataTempChinhanh, dataTempMaphieu, dataTempNguoitao, dataTempTrangthai, dataTempNgayTao)
         
-        let dataTemp = duplicate(dataTemp1, dataTempNgayTao)
+        let dataTemp = duplicate(dataTemp1, dataTempThoigian)
 
         try {
             if(dataTempChinhanh[0].notify === 0 || dataTempMaphieu[0].notify === 0 || dataTempNguoitao[0].notify === 0 || dataTempTrangthai[0].notify === 0 || dataTempNgayTao[0].notify === 0){
@@ -302,12 +296,6 @@ class Home extends Component {
 
             if(dataTemp.action === 'edit'){
                 let dataEdit = nhanvien.findIndex(nv => {
-                    return(
-                        nv.Maphieu === dataTemp.Maphieu
-                    )
-                })
-        
-                let dataEditkey = nhanvien.find(nv => {
                     return(
                         nv.Maphieu === dataTemp.Maphieu
                     )
@@ -378,6 +366,17 @@ class Home extends Component {
         })
     }
 
+    handleClickMaphieu = (Maphieu) => {
+        // console.log('kaito')
+        // this.setState({
+        let dataTemp = this.state.datanhanvien.filter((item) => {
+            return item.Maphieu === Maphieu
+        })
+
+        this.props.handleClickMaphieu(dataTemp)
+        // })
+    }
+
     render() {
 
         const rowSelection = {
@@ -403,7 +402,12 @@ class Home extends Component {
             {
                 title: 'Mã phiếu',
                 dataIndex: 'Maphieu',
-                key: 'Maphieu'
+                key: 'Maphieu',
+                render: (Maphieu) => {
+                    return(
+                        <Typography style={{ cursor: 'pointer' }} onClick={() => this.handleClickMaphieu(Maphieu)}>{Maphieu}</Typography>
+                    )
+                }
             },
             {
                 title: 'Ngày lập phiếu',

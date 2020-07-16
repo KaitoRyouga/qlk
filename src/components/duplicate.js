@@ -14,7 +14,7 @@ export default function duplicate(Object1, Object2) {
         return !item.notify
     });
 
-    console.log(unique2)
+    // console.log(unique2)
 
     return unique2
 }

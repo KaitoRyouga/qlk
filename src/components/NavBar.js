@@ -29,7 +29,8 @@ class NavBar extends Component {
         selectRowsSearch: [],
         ModalSearchForm: false,
         rowCurrent: [],
-        dataChange: []
+        dataChange: [],
+        infoPhieu: []
     }
 
     handleClickButton = (name) => {
@@ -58,10 +59,13 @@ class NavBar extends Component {
                 break;
 
             case "Chỉnh sửa":
+                // console.log('here')
                 this.setState({
                     ModalAddqlnv: true,
+                    disableLayout: true,
                     Qlnv: false,
-                    action: 'edit'
+                    action: 'edit',
+                    infoPhieu: []
                 })
     
                 this.handleClickEdit()
@@ -157,7 +161,7 @@ class NavBar extends Component {
     handlePushDataToHome = (data) => {
 
         try {
-            if(this.state.infoCopy[1].action == 'edit'){
+            if(this.state.infoCopy[1].action === 'edit'){
                 // console.log(data)
                 data.action = 'edit'
             }
@@ -172,6 +176,21 @@ class NavBar extends Component {
             dataChange: data,
             
         })
+    }
+
+    handleClickMaphieu = (Maphieu) => {
+        // console.log(Maphieu)
+        // let infophieu = this.state.
+        this.setState({
+            ModalAddqlnv: true,
+            Qlnv: false,
+            disableLayout: true,
+            infoPhieu: Maphieu
+        })
+    }
+
+    handleChangeEdit = () => {
+        this.handleClickButton('Chỉnh sửa')
     }
 
     render() {
@@ -348,12 +367,12 @@ class NavBar extends Component {
                     <Content>
                         {
                             Qlnv && (
-                                <Home dataChange={this.state.dataChange} handleExport={this.handleExport} handleClickColumn={this.handleClickColumn} handleClickEdit={this.handleClickEdit} action={this.state.action} handleClickButton={this.handleClickButton} handleClickView={this.handleClickView}></Home>
+                                <Home handleClickMaphieu={this.handleClickMaphieu} dataChange={this.state.dataChange} handleExport={this.handleExport} handleClickColumn={this.handleClickColumn} handleClickEdit={this.handleClickEdit} action={this.state.action} handleClickButton={this.handleClickButton} handleClickView={this.handleClickView}></Home>
                             )
                         }
                         {
                             ModalAddqlnv && (
-                                <AddModal handlePushDataToHome={this.handlePushDataToHome} selectRowsSearch={this.state.selectRowsSearch} handleClickSearch={this.handleClickSearch} info={this.state.infoCopy} infoview={this.state.infoview} handleClickBack={this.handleClickBack} view={this.view}></AddModal>
+                                <AddModal handleChangeEdit={this.handleChangeEdit} infoPhieu={this.state.infoPhieu} handlePushDataToHome={this.handlePushDataToHome} selectRowsSearch={this.state.selectRowsSearch} handleClickSearch={this.handleClickSearch} info={this.state.infoCopy} infoview={this.state.infoview} handleClickBack={this.handleClickBack} view={this.view}></AddModal>
                             )
                         }
                         {/* <AddModal handleClickSearch={this.handleClickSearch} info={this.state.infoCopy} infoview={this.state.infoview} handleClickBack={this.handleClickBack} view={this.view}></AddModal> */}

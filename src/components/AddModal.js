@@ -2,6 +2,8 @@ import React, { Component } from 'react';
 
 import { Typography, Layout, Divider, Row, Col, Form, Input, Button, Table, Space, Tabs, Select, InputNumber, DatePicker } from 'antd'
 import { CloseOutlined } from '@ant-design/icons'
+import { withRouter } from 'react-router-dom'
+import { Redirect } from "react-router-dom";
 
 import duplicate from './duplicate'
 import convertSumMoney from './convertSumMoney'
@@ -19,7 +21,7 @@ function financial(x) {
 
     x = String(x).split(".").join("");
 
-    if(Number(x) != x){
+    if(Number(x)){
         return null
     }
 
@@ -112,7 +114,9 @@ class AddModal extends Component {
             }
         ],
         dataArr: {},
-        Trangthai: ''
+        Trangthai: '',
+        infoPhieu: false,
+        redirect: null
     }
 
     onChangeTTH = (e) => {
@@ -161,9 +165,6 @@ class AddModal extends Component {
             valueTCanTra: numberTTH3
         })
 
-        // this.formRef.current.setFieldsValue({
-        //     CantraNCC: numberTTH3
-        // })
     }
 
     onChangeDaTra = (e) => {
@@ -195,6 +196,16 @@ class AddModal extends Component {
     }
 
     componentDidUpdate(prevProps, prevState) {
+
+        // if()
+        // console.log(prevProps.infoPhieu)
+        // console.log(this.props.infoPhieu)
+
+        if(prevProps.infoPhieu.length !== this.props.infoPhieu.length){
+            this.setState({
+                infoPhieu: ''
+            })
+        }
 
         if(prevState.valueDaTra !== this.state.valueDaTra){
             let valueDaTra = this.state.valueDaTra.split('.').join('')
@@ -253,7 +264,39 @@ class AddModal extends Component {
 
     componentDidMount(){
 
-        // console.log(this.props.info)
+        if(this.props.infoPhieu.length !== 0){
+            this.setState({
+                infoPhieu: true
+            })
+
+            // let infoPhieu = this.state.dataP.filter(item => {
+            //     return item.Mahang === this.props.infoPhieu
+            // })
+
+            this.setState({
+                dataP: this.props.infoPhieu
+            })
+
+            console.log(this.props.infoPhieu[0].Maphieu)
+
+            this.formRef.current.setFieldsValue({
+                Nguoitao: this.props.infoPhieu[0].Nguoitao,
+                NCC: this.props.infoPhieu[0].NCC,
+                Tongtienhang: this.props.infoPhieu[0].Tongtienhang,
+                Maphieu: this.props.infoPhieu[0].Maphieu,
+                Tongsoluong: this.props.infoPhieu[0].Tongsoluong,
+                Giamgia: this.props.infoPhieu[0].Giamgia,
+                CantraNCC: this.props.infoPhieu[0].CantraNCC,
+                TiennoNCC: this.props.infoPhieu[0].TiennoNCC,
+                TiendatraNCC: this.props.infoPhieu[0].TiendatraNCC,
+
+            })
+
+        }else{
+            this.setState({
+                infoPhieu: false
+            })
+        }
 
         try {
             switch (this.props.info[1].action) {
@@ -269,7 +312,6 @@ class AddModal extends Component {
                     this.formRef.current.setFieldsValue({
                         Nguoitao: this.props.info[0].Nguoitao,
                         NCC: this.props.info[0].NCC,
-                        Tongtienhang: this.props.info[0].Tongtienhang,
                         Tongtienhang: this.props.info[0].Tongtienhang,
                         CantraNCC: this.props.info[0].CantraNCC,
                         TiennoNCC: this.props.info[0].TiennoNCC,
@@ -289,7 +331,6 @@ class AddModal extends Component {
                     this.formRef.current.setFieldsValue({
                         Nguoitao: this.props.info[0].Nguoitao,
                         NCC: this.props.info[0].NCC,
-                        Tongtienhang: this.props.info[0].Tongtienhang,
                         Maphieu: this.props.info[0].Maphieu,
                         Tongsoluong: this.props.info[0].Tongsoluong,
                         Giamgia: this.props.info[0].Giamgia,
@@ -299,8 +340,10 @@ class AddModal extends Component {
                         TiendatraNCC: this.props.info[0].TiendatraNCC,
 
                     })
+                    break
             
                 default:
+                    console.log('error')
                     break;
             }
         } catch (error) {
@@ -340,19 +383,25 @@ class AddModal extends Component {
 
             }
         } catch (error) {
-            let random = Math.random().toString(36);
-            random = random.slice(random.length - 3, random.length).toUpperCase()
-            let utc = new Date().toJSON().slice(0,10).replace(/-/g,'');   
+            try {
+                if(this.props.infoPhieu[0].Maphieu){
 
-            this.formRef.current.setFieldsValue({
-                Tongsoluong: financial(dataArr.Soluong),
-                Giamgia: financial(dataArr.Giamgia),
-                Tongtienhang: financial(dataArr.Thanhtien),
-                CantraNCC: financial(dataArr.Thanhtien),
-                TiendatraNCC: '0',
-                TiennoNCC: financial(dataArr.Thanhtien),
-                Maphieu: random + utc
-            })
+                }
+            } catch (error) {
+                let random = Math.random().toString(36);
+                random = random.slice(random.length - 3, random.length).toUpperCase()
+                let utc = new Date().toJSON().slice(0,10).replace(/-/g,'');   
+    
+                this.formRef.current.setFieldsValue({
+                    Tongsoluong: financial(dataArr.Soluong),
+                    Giamgia: financial(dataArr.Giamgia),
+                    Tongtienhang: financial(dataArr.Thanhtien),
+                    CantraNCC: financial(dataArr.Thanhtien),
+                    TiendatraNCC: '0',
+                    TiennoNCC: financial(dataArr.Thanhtien),
+                    Maphieu: random + utc
+                })
+            }
         }
         
     }
@@ -449,11 +498,29 @@ class AddModal extends Component {
     }
 
     onFinish = (values) => {
+        
         values.Trangthai = this.state.Trangthai
         values.dataEdit = this.state.dataP
+
+        values.action = 'edit'
+
+        if(this.state.Trangthai === 'In phiếu'){
+            // console.log(values)
+            this.setState({
+                redirect: '/print'
+            })
+        }else{
+            this.props.handlePushDataToHome(values)
+        }
+    }
+
+    handleChangeEdit = () => {
+        this.props.handleChangeEdit('edit')
+    }
+
+    handleClickInphieu = () => {
+        console.log('in phieu')
         // console.log()
-        this.props.handlePushDataToHome(values)
-        // console.log(values)
     }
 
 
@@ -477,7 +544,7 @@ class AddModal extends Component {
               key: 'index',
               render: (index, sp) => {
                   return(
-                    <CloseOutlined onClick={() => this.handleClickRemove(sp)} style={{cursor: "pointer"}}/>
+                    <CloseOutlined disabled={this.state.infoPhieu} onClick={() => this.handleClickRemove(sp)} style={{cursor: "pointer"}}/>
                   )
               }
             },
@@ -502,7 +569,7 @@ class AddModal extends Component {
               dataIndex: 'Soluong',
               render: (Soluong, Mahang) => {
                 return(
-                    <InputNumber onChange={(e) => {
+                    <InputNumber disabled={this.state.infoPhieu} onChange={(e) => {
                         this.onChangeInputRange(e, Mahang)
                     }} defaultValue={Soluong}></InputNumber>
                 )
@@ -526,7 +593,7 @@ class AddModal extends Component {
                 dataIndex: 'Giamgia',
                 render: (Giamgia) => {         
                     return(  
-                        <Input style={{width: '5em'}} defaultValue={Giamgia} onChange={(e) => this.onChangeGG(e)} value={financial(Giamgia)}></Input>
+                        <Input disabled={this.state.infoPhieu} style={{width: '5em'}} defaultValue={Giamgia} onChange={(e) => this.onChangeGG(e)} value={financial(Giamgia)}></Input>
                     )
                 }
               },
@@ -548,12 +615,18 @@ class AddModal extends Component {
                 dataIndex: 'Ghichu',
                 render: (Ghichu) => {
                     return(
-                        <TextArea style={{width: '10em'}} placeholder="Ghi chú"></TextArea>
+                        <TextArea disabled={this.state.infoPhieu} style={{width: '10em'}} placeholder="Ghi chú"></TextArea>
                     )
                 }
               },
           ];
-        
+
+        if (this.state.redirect) {
+            return <Redirect to={{
+                pathname: this.state.redirect,
+                data: this.state.dataP
+            }} />
+        }
 
         return (
             <div>
@@ -609,7 +682,7 @@ class AddModal extends Component {
                                                             <Row>
                                                                 <Col span={24}>
                                                                     <Form.Item name="Nguoitao" label="Người tạo" rules={[{ required: false, message: 'Ô này không được để trống !!!' }]}>
-                                                                        <Select>
+                                                                        <Select disabled={this.state.infoPhieu}>
                                                                             <Option value="Nguyễn Văn A">Nguyễn Văn A</Option>
                                                                             <Option value="Nguyễn Văn B">Nguyễn Văn B</Option>
                                                                         </Select>
@@ -618,7 +691,7 @@ class AddModal extends Component {
                                                                 <div className="spaceCol"></div>
                                                                 <Col span={24}>
                                                                     <Form.Item label="Ngày tạo" name="Ngaytao">
-                                                                        <DatePicker showTime={true} showToday={true}></DatePicker>
+                                                                        <DatePicker disabled={this.state.infoPhieu} showTime={true} showToday={true}></DatePicker>
                                                                     </Form.Item>
                                                                 </Col>
                                                                 <div className="spaceCol"></div>
@@ -630,7 +703,7 @@ class AddModal extends Component {
                                                                 <div className="spaceCol"></div>
                                                                 <Col span={24}>
                                                                     <Form.Item name="NCC" label="NCC" rules={[{ required: false, message: 'Ô này không được để trống !!!' }]}>
-                                                                        <Select>
+                                                                        <Select disabled={this.state.infoPhieu}>
                                                                             <Option value="NCC1">NCC 1</Option>
                                                                             <Option value="NCC2">NCC 2</Option>
                                                                         </Select>
@@ -672,7 +745,7 @@ class AddModal extends Component {
                                                                 <div className="spaceCol"></div>
                                                                 <Col span={24}>
                                                                     <Form.Item name="TiendatraNCC" label="Tiền đã trả NCC">
-                                                                        <Input onChange={(e) => this.onChangeDaTra(e)}></Input>
+                                                                        <Input disabled={this.state.infoPhieu} onChange={(e) => this.onChangeDaTra(e)}></Input>
                                                                     </Form.Item>
                                                                 </Col>
                                                                 <div className="spaceCol"></div>
@@ -684,7 +757,7 @@ class AddModal extends Component {
                                                                 <div className="spaceCol"></div>
                                                                 <Col span={24}>
                                                                     <Form.Item>
-                                                                        <TextArea placeholder="Ghi chú"></TextArea>
+                                                                        <TextArea disabled={this.state.infoPhieu} placeholder="Ghi chú"></TextArea>
                                                                     </Form.Item>
                                                                 </Col>
                                                             </Row>
@@ -702,17 +775,32 @@ class AddModal extends Component {
                             </Row>
                         </Layout>
                     <Footer>
-                        <Row>
-                            <Col span={12} offset={15}>
-                                <Space>
-                                    <Button form="formAddT" key="submit" htmlType="submit" onClick={() => this.handleChangeTrangthai('Lưu tạm')} className="ButtonModal">Lưu tạm</Button>
-                                    <Button form="formAddT" key="submit" htmlType="submit" onClick={() => this.handleChangeTrangthai('Hoàn thành')} className="ButtonModal">Hoàn thành</Button>
-                                    <Button className="ButtonModal">Import</Button>
-                                    <Button className="ButtonModal">Làm mới</Button>
-                                    <Button className="ButtonModal">Đóng</Button>
-                                </Space>
-                            </Col>
-                        </Row>
+                    {
+                        this.state.infoPhieu ? (
+                            <Row>
+                                <Col span={12} offset={15}>
+                                    <Space>
+                                        <Button onClick={() => this.handleChangeEdit()} className="ButtonModal">Chỉnh sửa</Button>
+                                        <Button form="formAddT" key="submit" htmlType="submit" onClick={() => this.handleChangeTrangthai('In phiếu')} className="ButtonModal">In phiếu</Button>
+                                        <Button className="ButtonModal">Xuất file</Button>
+                                        <Button className="ButtonModal">Đóng</Button>
+                                    </Space>
+                                </Col>
+                            </Row>
+                        ) : (
+                            <Row>
+                                <Col span={12} offset={15}>
+                                    <Space>
+                                        <Button form="formAddT" key="submit" htmlType="submit" onClick={() => this.handleChangeTrangthai('Lưu tạm')} className="ButtonModal">Lưu tạm</Button>
+                                        <Button form="formAddT" key="submit" htmlType="submit" onClick={() => this.handleChangeTrangthai('Hoàn thành')} className="ButtonModal">Hoàn thành</Button>
+                                        <Button className="ButtonModal">Import</Button>
+                                        <Button className="ButtonModal">Làm mới</Button>
+                                        <Button className="ButtonModal">Đóng</Button>
+                                    </Space>
+                                </Col>
+                            </Row>
+                            )
+                    }
                     </Footer>
                 </Layout>
             </div>
@@ -720,4 +808,4 @@ class AddModal extends Component {
     }
 }
 
-export default AddModal;
+export default withRouter(AddModal);

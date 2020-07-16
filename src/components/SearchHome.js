@@ -1,3 +1,5 @@
+import moment from 'moment';
+
 export default function SearchHome(variable ,object, nhanvien) {
 
     var nhanvienAfterSearchChinhanh = []
@@ -30,7 +32,28 @@ export default function SearchHome(variable ,object, nhanvien) {
         return(
             nhanvienAfterSearchChinhanh
         )
-    }else{
+    }else if(variable === 'Thoigian'){
+
+        let timeNew = moment(0)
+
+        if(object === 'Hôm nay'){
+            timeNew = moment().hours(0).minutes(0)
+        }else if(object === 'Tuần này'){
+            timeNew = moment().day(-4)
+        }
+
+        nhanvienAfterSearchChinhanh = nhanvien.filter(nv => {
+    
+            return(
+                nv.Ngaytao >= timeNew
+            )
+
+        })
+
+        return nhanvienAfterSearchChinhanh
+        
+    }
+    else{
 
 
         if(object === null || object === '' || object === undefined){
